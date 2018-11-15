@@ -22,10 +22,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-        TextView mainTextView = (TextView) findViewById(R.id.myImageViewText);
+        final TextView mainTextView = (TextView) findViewById(R.id.myImageViewText);
         processNewCity(mainTextView);
+
+        mainTextView.setOnTouchListener(new OnSwipeTouchListener(this){
+            @Override
+            public void onSwipeLeft() {
+                processNewCity(mainTextView);
+            }
+        });
 
 
     }
