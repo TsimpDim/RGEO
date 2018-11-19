@@ -3,7 +3,6 @@ package com.tsimpdim.rgeo;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -19,9 +18,8 @@ public class DatabaseHelper extends SQLiteAssetHelper {
 
         SQLiteDatabase database = getReadableDatabase();
 
-        Cursor cursor = database.rawQuery("SELECT name FROM cities15000 ORDER BY RANDOM() LIMIT 1;", null);
+        Cursor cursor = database.rawQuery("SELECT * FROM cities15000 ORDER BY RANDOM() LIMIT 1;", null);
         cursor.moveToFirst();
         return cursor;
-
     }
 }
