@@ -17,6 +17,10 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -36,7 +40,7 @@ public class MainActivity extends AppCompatActivity{
         mainTextView.setOnTouchListener(new OnSwipeTouchListener(this){
             @Override
             public void onSwipeLeft() {
-                processNewCity(mainTextView);
+                processNewCity();
             }
         });
 
@@ -45,28 +49,32 @@ public class MainActivity extends AppCompatActivity{
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
 
-        processNewCity(mainTextView);
+        processNewCity();
 
     }
 
     /**
      * Generates new info and updates the UI
-     * @param curTextView
      * @return city id
      */
-    private long processNewCity(TextView curTextView){
+    private long processNewCity(){
 
+        // Get Cursor
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         Cursor rndCityCur = dbHelper.getRndCity();
+
+        // Get city name
         String rndCityName = rndCityCur.getString(rndCityCur.getColumnIndex("name"));
+        TextView cityNameView = (TextView) findViewById(R.id.myImageViewText);
 
         try {
-            curTextView.setText(new String(rndCityName.getBytes("ISO-8859-1"), "UTF-8"));
+            cityNameView.setText(new String(rndCityName.getBytes("ISO-8859-1"), "UTF-8"));
         }catch(UnsupportedEncodingException e){
-            curTextView.setText(rndCityName);
+            cityNameView.setText(rndCityName);
             Toast.makeText(this,"Text might be shown incorrectly", Toast.LENGTH_LONG).show();
         }
 
+        // Set up map
         Toast.makeText(this, "Loading map...", Toast.LENGTH_SHORT).show();
 
         float latitude = rndCityCur.getFloat(rndCityCur.getColumnIndex("latitude"));
@@ -77,6 +85,21 @@ public class MainActivity extends AppCompatActivity{
         mapController.setZoom(13);
         GeoPoint startPoint = new GeoPoint(latitude, longitude);
         mapController.setCenter(startPoint);
+
+        // Get population
+        int population = rndCityCur.getInt(rndCityCur.getColumnIndex("population")); // Actual population from DB
+        TextView cityPopView = (TextView) findViewById(R.id.population); // Population TextView
+
+        // Set proper pattern on numbers -> separate thousands/decimals etc. with spaces
+        DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+        formatSymbols.setDecimalSeparator(' ');
+        formatSymbols.setGroupingSeparator(' ');
+        formatter.setDecimalFormatSymbols(formatSymbols);
+
+        // Build & set final string
+        String populationString = getResources().getString(R.string.city_population, formatter.format(population)); // Final string from strings.xml placeholder
+        cityPopView.setText(populationString);
 
         return rndCityCur.getLong(rndCityCur.getColumnIndex("_id"));
     }
