@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -96,6 +97,10 @@ public class MainActivity extends AppCompatActivity{
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    public void toggleContents(View v){
+        map.setVisibility(map.isShown() ? View.GONE: View.VISIBLE );
     }
 
 }
