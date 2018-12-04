@@ -101,9 +101,14 @@ public class MainActivity extends AppCompatActivity{
         formatSymbols.setGroupingSeparator(' ');
         formatter.setDecimalFormatSymbols(formatSymbols);
 
-        // Build & set final string
+        // Build & set final population string
         String populationString = getResources().getString(R.string.city_population, formatter.format(population)); // Final string from strings.xml placeholder
         cityPopView.setText(populationString);
+
+        // Get & Set Country Code
+        String cc = rndCityCur.getString(rndCityCur.getColumnIndex("countrycode"));
+        TextView countryCodeView = (TextView) findViewById(R.id.cc);
+        countryCodeView.setText(getResources().getString(R.string.country_code, cc));
 
         return rndCityCur.getLong(rndCityCur.getColumnIndex("_id"));
     }

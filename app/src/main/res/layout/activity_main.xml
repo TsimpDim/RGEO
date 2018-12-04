@@ -3,7 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:background="#323232"
+    >
 
 <LinearLayout
     android:id="@+id/relativelayout"
@@ -45,19 +47,23 @@
             android:layout_width="98dp"
             android:layout_height="26dp"
 
+            android:layout_alignStart="@+id/myImageViewText"
             android:layout_alignLeft="@id/myImageView"
             android:layout_alignTop="@id/myImageView"
             android:layout_alignRight="@id/myImageView"
+
             android:layout_alignBottom="@id/myImageView"
+            android:layout_marginStart="-1dp"
 
+            android:layout_marginLeft="-1dp"
             android:layout_marginTop="174dp"
-            android:layout_marginRight="313dp"
-
-            android:background="#8000"
-            android:gravity="center"
-            android:text="Map"
+            android:layout_marginRight="314dp"
+            android:layout_marginBottom="0dp"
+            android:background="@drawable/map_rect"
             android:clickable="true"
+            android:gravity="center"
             android:onClick="toggleContents"
+            android:text="Map"
             android:textColor="#FFF"
             android:textSize="15sp" />
 
@@ -69,26 +75,47 @@
         android:layout_height="190dp"
         android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/population"
+    <TextView
+        android:id="@+id/population"
 
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
 
-            android:paddingLeft="50dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
+        android:paddingLeft="50dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
 
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
 
-            android:layout_marginTop="20dp"
+        android:layout_marginTop="20dp"
 
-            android:background="@drawable/rect"
-            android:elevation="10dp"
+        android:background="@drawable/pop_rect"
+        android:elevation="10dp"
 
-            android:text="@string/city_population"
-            />
+        android:text="@string/city_population"
+        />
+
+    <TextView
+        android:id="@+id/cc"
+
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+
+        android:paddingLeft="50dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+
+        android:layout_marginTop="5dp"
+
+        android:background="@drawable/cc_rect"
+        android:elevation="10dp"
+
+        android:text="@string/country_code"
+        />
 
 
 </LinearLayout>

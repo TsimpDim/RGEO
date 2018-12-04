@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">RGEO</string>
     <string name="city_population">Population : %1s people!</string>
+    <string name="country_code">Country Code : %1s </string>
 </resources>
