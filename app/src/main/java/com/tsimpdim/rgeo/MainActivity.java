@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -24,7 +26,10 @@ import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -105,10 +110,23 @@ public class MainActivity extends AppCompatActivity{
         String populationString = getResources().getString(R.string.city_population, formatter.format(population)); // Final string from strings.xml placeholder
         cityPopView.setText(populationString);
 
-        // Get & Set Country Code
-        String cc = rndCityCur.getString(rndCityCur.getColumnIndex("countrycode"));
-        TextView countryCodeView = (TextView) findViewById(R.id.cc);
-        countryCodeView.setText(getResources().getString(R.string.country_code, cc));
+        // Get & Set CountryNameJSON Code & CountryNameJSON
+        final TextView countryCodeView = (TextView) findViewById(R.id.country);
+        final String cc = rndCityCur.getString(rndCityCur.getColumnIndex("countrycode"));
+
+        CountryAPIHelper api = new CountryAPIHelper("https://restcountries.eu/rest/v2/alpha/" + cc + "?fields=name", this);
+        api.getResponse(new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject result) {
+                try{
+                    String country = result.getString("name");
+                    countryCodeView.setText(getResources().getString(R.string.country_code, country, cc));
+                }catch(JSONException e){
+                    String country = " ";
+                    countryCodeView.setText(getResources().getString(R.string.country_code, country, cc));
+                }
+            }
+        });
 
         return rndCityCur.getLong(rndCityCur.getColumnIndex("_id"));
     }

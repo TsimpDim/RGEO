@@ -76,7 +76,7 @@
         android:visibility="gone"/>
 
     <TextView
-        android:id="@+id/population"
+        android:id="@+id/country"
 
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -88,16 +88,15 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
 
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
 
-        android:background="@drawable/pop_rect"
+        android:background="@drawable/country_rect"
         android:elevation="10dp"
 
-        android:text="@string/city_population"
-        />
+        android:text="@string/country_code" />
 
     <TextView
-        android:id="@+id/cc"
+        android:id="@+id/population"
 
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -111,11 +110,12 @@
 
         android:layout_marginTop="5dp"
 
-        android:background="@drawable/cc_rect"
+        android:background="@drawable/pop_rect"
         android:elevation="10dp"
 
-        android:text="@string/country_code"
-        />
+        android:text="@string/city_population" />
+
+
 
 
 </LinearLayout>
