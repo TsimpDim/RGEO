@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.api.IMapController;
@@ -110,17 +111,42 @@ public class MainActivity extends AppCompatActivity{
         String populationString = getResources().getString(R.string.city_population, formatter.format(population)); // Final string from strings.xml placeholder
         cityPopView.setText(populationString);
 
-        // Get & Set CountryNameJSON Code & CountryNameJSON
+        // Get & Set country name, code, timezone, currency, language
         final TextView countryCodeView = (TextView) findViewById(R.id.country);
+        final TextView countryLangView = (TextView) findViewById(R.id.language);
+        final TextView countryCurrView = (TextView) findViewById(R.id.currency);
+        final TextView countryTmzView = (TextView) findViewById(R.id.timezone);
+
         final String cc = rndCityCur.getString(rndCityCur.getColumnIndex("countrycode"));
 
-        CountryAPIHelper api = new CountryAPIHelper("https://restcountries.eu/rest/v2/alpha/" + cc + "?fields=name", this);
+        CountryAPIHelper api = new CountryAPIHelper("https://restcountries.eu/rest/v2/alpha/" + cc + "?fields=name;timezones;currencies;languages", this);
         api.getResponse(new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject result) {
                 try{
+                    // Country name
                     String country = result.getString("name");
                     countryCodeView.setText(getResources().getString(R.string.country_code, country, cc));
+
+                    // Timezone
+                    JSONArray timezones = result.getJSONArray("timezones");
+                    String timezone = timezones.getString(0);
+                    countryTmzView.setText(getResources().getString(R.string.timezone, timezone));
+
+                    // Currency
+                    JSONArray currencyArr = result.getJSONArray("currencies");
+                    JSONObject currencyObj = currencyArr.getJSONObject(0);
+                    String currency = currencyObj.getString("name");
+                    String symbol = currencyObj.getString("symbol");
+                    String code = currencyObj.getString("code");
+                    countryCurrView.setText(getResources().getString(R.string.currency, currency, code, symbol));
+
+                    // Language
+                    JSONArray languages = result.getJSONArray("languages");
+                    JSONObject languageObj = languages.getJSONObject(0);
+                    String language = languageObj.getString("name");
+                    countryLangView.setText(getResources().getString(R.string.language, language));
+
                 }catch(JSONException e){
                     String country = " ";
                     countryCodeView.setText(getResources().getString(R.string.country_code, country, cc));
