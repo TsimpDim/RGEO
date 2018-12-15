@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 public class DatabaseHelper extends SQLiteAssetHelper {
-    private static final String DATABASE_NAME = "cities.db";
+    private static final String DATABASE_NAME = "cities_compact.db";
     private static final int DATABASE_VERSION = 1;
 
     public DatabaseHelper(Context context) {
