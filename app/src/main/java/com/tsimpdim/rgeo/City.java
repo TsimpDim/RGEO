@@ -7,6 +7,7 @@ public class City {
     private float longitude;
     private int population;
     private String countryName;
+    private String countryCode;
     private String language;
     private String currency;
     private String currencySymbol;
@@ -16,13 +17,14 @@ public class City {
 
     public City(){}
 
-    public City(String cityName, float latitude, float longitude, int population, String countryName,
+    public City(String cityName, float latitude, float longitude, int population, String countryName, String countryCode,
                 String language, String currency, String currencySymbol, String currencyCode, String timezone) {
         this.cityName = cityName;
         this.latitude = latitude;
         this.longitude = longitude;
         this.population = population;
         this.countryName = countryName;
+        this.countryCode = countryCode;
         this.language = language;
         this.currency = currency;
         this.currencySymbol = currencySymbol;
@@ -108,5 +110,13 @@ public class City {
 
     public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 }

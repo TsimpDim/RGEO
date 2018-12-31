@@ -2,6 +2,7 @@ package com.tsimpdim.rgeo;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
@@ -35,7 +36,8 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity{
 
-    MapView map = null;
+    private MapView map = null;
+    private ViewManager viewMan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +47,9 @@ public class MainActivity extends AppCompatActivity{
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
-        final TextView mainTextView = (TextView) findViewById(R.id.myImageViewText);
+        viewMan = new ViewManager(MainActivity.this);
 
+        final TextView mainTextView = (TextView) findViewById(R.id.myImageViewText);
         mainTextView.setOnTouchListener(new OnSwipeTouchListener(this){
             @Override
             public void onSwipeLeft() {
@@ -75,65 +78,38 @@ public class MainActivity extends AppCompatActivity{
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         Cursor rndCityCur = dbHelper.getRndCity();
 
-        // Get city name
-        currCity.setCityName(rndCityCur.getString(rndCityCur.getColumnIndex("name")));
-        TextView cityNameView = (TextView) findViewById(R.id.myImageViewText);
-
-        try {
-            cityNameView.setText(new String(currCity.getCityName().getBytes("ISO-8859-1"), "UTF-8"));
-        }catch(UnsupportedEncodingException e){
-            cityNameView.setText(currCity.getCityName());
-            Toast.makeText(this,"Text might be shown incorrectly", Toast.LENGTH_LONG).show();
-        }
-
         // Set up map
         Toast.makeText(this, "Loading map...", Toast.LENGTH_SHORT).show();
 
         currCity.setLatitude(rndCityCur.getFloat(rndCityCur.getColumnIndex("latitude")));
         currCity.setLongitude(rndCityCur.getFloat(rndCityCur.getColumnIndex("longitude")));
 
-
         IMapController mapController = map.getController();
         mapController.setZoom(13);
         GeoPoint startPoint = new GeoPoint(currCity.getLatitude(), currCity.getLongitude());
         mapController.setCenter(startPoint);
 
+
+        // Get city name
+        currCity.setCityName(rndCityCur.getString(rndCityCur.getColumnIndex("name")));
+
         // Get population
         currCity.setPopulation(rndCityCur.getInt(rndCityCur.getColumnIndex("population"))); // Actual population from DB
-        TextView cityPopView = (TextView) findViewById(R.id.population); // Population TextView
 
-        // Set proper pattern on numbers -> separate thousands/decimals etc. with spaces
-        DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
-        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
-        formatSymbols.setDecimalSeparator(' ');
-        formatSymbols.setGroupingSeparator(' ');
-        formatter.setDecimalFormatSymbols(formatSymbols);
+        // Get country code
+        currCity.setCountryCode(rndCityCur.getString(rndCityCur.getColumnIndex("countrycode")));
 
-        // Build & set final population string
-        String populationString = getResources().getString(R.string.city_population, formatter.format(currCity.getPopulation())); // Final string from strings.xml placeholder
-        cityPopView.setText(populationString);
-
-        // Get & Set country name, code, timezone, currency, language
-        final TextView countryCodeView = (TextView) findViewById(R.id.country);
-        final TextView countryLangView = (TextView) findViewById(R.id.language);
-        final TextView countryCurrView = (TextView) findViewById(R.id.currency);
-        final TextView countryTmzView = (TextView) findViewById(R.id.timezone);
-
-        final String cc = rndCityCur.getString(rndCityCur.getColumnIndex("countrycode"));
-
-        CountryAPIHelper api = new CountryAPIHelper("https://restcountries.eu/rest/v2/alpha/" + cc + "?fields=name;timezones;currencies;languages", currCity, this);
+        CountryAPIHelper api = new CountryAPIHelper("https://restcountries.eu/rest/v2/alpha/" + currCity.getCountryCode() + "?fields=name;timezones;currencies;languages", currCity, this);
         api.getResponse(new VolleyCallback() {
             @Override
             public void onSuccess(City city, JSONObject result) {
                 try{
                     // Country name
                     city.setCountryName(result.getString("name"));
-                    countryCodeView.setText(getResources().getString(R.string.country_code, city.getCountryName(), cc));
 
                     // Timezone
                     JSONArray timezones = result.getJSONArray("timezones");
                     city.setTimezone(timezones.getString(0));
-                    countryTmzView.setText(getResources().getString(R.string.timezone, city.getTimezone()));
 
                     // Currency
                     JSONArray currencyArr = result.getJSONArray("currencies");
@@ -141,16 +117,15 @@ public class MainActivity extends AppCompatActivity{
                     city.setCurrency(currencyObj.getString("name"));
                     city.setCurrencySymbol(currencyObj.getString("symbol"));
                     city.setCurrencyCode(currencyObj.getString("code"));
-                    countryCurrView.setText(getResources().getString(R.string.currency, city.getCurrency(), city.getCurrencyCode(), city.getCurrencySymbol()));
 
                     // Language
                     JSONArray languages = result.getJSONArray("languages");
                     JSONObject languageObj = languages.getJSONObject(0);
                     city.setLanguage(languageObj.getString("name"));
-                    countryLangView.setText(getResources().getString(R.string.language, city.getLanguage()));
 
+                    viewMan.setViewsFromCity(city);
                 }catch(JSONException e){
-                    countryCodeView.setText(getResources().getString(R.string.country_code, city.getCountryName(), cc));
+                    Toast.makeText(MainActivity.this, "An error occured", Toast.LENGTH_SHORT).show();
                 }
             }
         });
