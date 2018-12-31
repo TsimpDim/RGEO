@@ -17,11 +17,13 @@ public class CountryAPIHelper {
     private final String callURL;
     private final RequestQueue queue;
     private final Context ctx;
+    private final City city;
 
-    public CountryAPIHelper(String url, Context context){
+    public CountryAPIHelper(String url, City city, Context context){
         ctx = context;
         callURL = url;
         queue = Volley.newRequestQueue(ctx);
+        this.city = city;
     }
 
     public void getResponse(final VolleyCallback callback){
@@ -31,7 +33,7 @@ public class CountryAPIHelper {
 
                 @Override
                 public void onResponse(JSONObject response) {
-                    callback.onSuccess(response);
+                    callback.onSuccess(city, response);
                 }
             }, new Response.ErrorListener() {
 
