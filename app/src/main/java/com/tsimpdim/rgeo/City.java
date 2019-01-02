@@ -1,5 +1,16 @@
 package com.tsimpdim.rgeo;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.osmdroid.api.IMapController;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+
 public class City {
 
     private String cityName;
@@ -14,8 +25,12 @@ public class City {
     private String currencyCode;
     private String timezone;
 
+    private ViewManager viewMan;
+    private DatabaseHelper dbHelper;
+    private MapView map;
 
-    public City(){}
+    private Context mainCtx;
+
 
     public City(String cityName, float latitude, float longitude, int population, String countryName, String countryCode,
                 String language, String currency, String currencySymbol, String currencyCode, String timezone) {
@@ -30,6 +45,78 @@ public class City {
         this.currencySymbol = currencySymbol;
         this.currencyCode = currencyCode;
         this.timezone = timezone;
+    }
+
+    public City(Context ctx, MapView mapView, DatabaseHelper dbHelper, ViewManager viewMan){
+        this.dbHelper = dbHelper;
+        this.viewMan = viewMan;
+        map = mapView;
+        mainCtx = ctx;
+
+        processNewCity();
+    }
+
+
+    /**
+     * Generates new random city
+     * @return City object
+     */
+    private City processNewCity(){
+
+        // Get random City from DB
+        Cursor rndCityCur = dbHelper.getRndCity();
+
+        // Get Latitude & Longitude
+        setLatitude(rndCityCur.getFloat(rndCityCur.getColumnIndex("latitude")));
+        setLongitude(rndCityCur.getFloat(rndCityCur.getColumnIndex("longitude")));
+
+        // Show location on map
+        IMapController mapController = map.getController();
+        mapController.setZoom(13);
+        GeoPoint startPoint = new GeoPoint(getLatitude(), getLongitude());
+        mapController.setCenter(startPoint);
+
+        // Get city name
+        setCityName(rndCityCur.getString(rndCityCur.getColumnIndex("name")));
+
+        // Get population
+        setPopulation(rndCityCur.getInt(rndCityCur.getColumnIndex("population"))); // Actual population from DB
+
+        // Get country code
+        setCountryCode(rndCityCur.getString(rndCityCur.getColumnIndex("countrycode")));
+
+        CountryAPIHelper api = new CountryAPIHelper("https://restcountries.eu/rest/v2/alpha/" + getCountryCode() + "?fields=name;timezones;currencies;languages", this, mainCtx);
+        api.getResponse(new VolleyCallback() {
+            @Override
+            public void onSuccess(City city, JSONObject result) {
+                try{
+                    // Country name
+                    city.setCountryName(result.getString("name"));
+
+                    // Timezone
+                    JSONArray timezones = result.getJSONArray("timezones");
+                    city.setTimezone(timezones.getString(0));
+
+                    // Currency
+                    JSONArray currencyArr = result.getJSONArray("currencies");
+                    JSONObject currencyObj = currencyArr.getJSONObject(0);
+                    city.setCurrency(currencyObj.getString("name"));
+                    city.setCurrencySymbol(currencyObj.getString("symbol"));
+                    city.setCurrencyCode(currencyObj.getString("code"));
+
+                    // Language
+                    JSONArray languages = result.getJSONArray("languages");
+                    JSONObject languageObj = languages.getJSONObject(0);
+                    city.setLanguage(languageObj.getString("name"));
+
+                    viewMan.setViewsFromCity(city);
+                }catch(JSONException e){
+                    Toast.makeText(mainCtx, "Error on city name", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        return this;
     }
 
     public String getCityName() {

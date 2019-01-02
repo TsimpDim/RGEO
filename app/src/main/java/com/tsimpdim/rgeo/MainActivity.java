@@ -1,62 +1,34 @@
 package com.tsimpdim.rgeo;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
-import android.widget.Toast;
 
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-
-import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 public class MainActivity extends AppCompatActivity{
 
     private MapView map = null;
-    private ViewManager viewMan;
     private DatabaseHelper dbHelper;
+    private ViewManager viewMan;
+    private City prevCity;
+    private City currCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Context ctx = getApplicationContext();
+        final Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
+        dbHelper = new DatabaseHelper(this);
         viewMan = new ViewManager(MainActivity.this);
-
-        final TextView mainTextView = (TextView) findViewById(R.id.myImageViewText);
-        mainTextView.setOnTouchListener(new OnSwipeTouchListener(this){
-            @Override
-            public void onSwipeLeft() {
-                processNewCity();
-            }
-        });
 
         // Set up Map
         map = (MapView) findViewById(R.id.map);
@@ -64,75 +36,23 @@ public class MainActivity extends AppCompatActivity{
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
 
-        dbHelper = new DatabaseHelper(this);
-
-        processNewCity();
-
-    }
-
-    /**
-     * Generates new info and updates the UI
-     * @return city id
-     */
-    private long processNewCity(){
-
-        final City currCity = new City();
-
-        // Get random City from DB
-        Cursor rndCityCur = dbHelper.getRndCity();
-
-        // Get Latitude & Longitude
-        currCity.setLatitude(rndCityCur.getFloat(rndCityCur.getColumnIndex("latitude")));
-        currCity.setLongitude(rndCityCur.getFloat(rndCityCur.getColumnIndex("longitude")));
-
-        // Show location on map
-        IMapController mapController = map.getController();
-        mapController.setZoom(13);
-        GeoPoint startPoint = new GeoPoint(currCity.getLatitude(), currCity.getLongitude());
-        mapController.setCenter(startPoint);
-
-        // Get city name
-        currCity.setCityName(rndCityCur.getString(rndCityCur.getColumnIndex("name")));
-
-        // Get population
-        currCity.setPopulation(rndCityCur.getInt(rndCityCur.getColumnIndex("population"))); // Actual population from DB
-
-        // Get country code
-        currCity.setCountryCode(rndCityCur.getString(rndCityCur.getColumnIndex("countrycode")));
-
-        CountryAPIHelper api = new CountryAPIHelper("https://restcountries.eu/rest/v2/alpha/" + currCity.getCountryCode() + "?fields=name;timezones;currencies;languages", currCity, this);
-        api.getResponse(new VolleyCallback() {
+        final TextView mainTextView = (TextView) findViewById(R.id.myImageViewText);
+        mainTextView.setOnTouchListener(new OnSwipeTouchListener(this){
             @Override
-            public void onSuccess(City city, JSONObject result) {
-                try{
-                    // Country name
-                    city.setCountryName(result.getString("name"));
+            public void onSwipeLeft() {
+                prevCity = currCity;
+                currCity = new City(ctx, map, dbHelper, viewMan);
+            }
 
-                    // Timezone
-                    JSONArray timezones = result.getJSONArray("timezones");
-                    city.setTimezone(timezones.getString(0));
-
-                    // Currency
-                    JSONArray currencyArr = result.getJSONArray("currencies");
-                    JSONObject currencyObj = currencyArr.getJSONObject(0);
-                    city.setCurrency(currencyObj.getString("name"));
-                    city.setCurrencySymbol(currencyObj.getString("symbol"));
-                    city.setCurrencyCode(currencyObj.getString("code"));
-
-                    // Language
-                    JSONArray languages = result.getJSONArray("languages");
-                    JSONObject languageObj = languages.getJSONObject(0);
-                    city.setLanguage(languageObj.getString("name"));
-
-                    viewMan.setViewsFromCity(city);
-                }catch(JSONException e){
-                    Toast.makeText(MainActivity.this, "Error on city name", Toast.LENGTH_SHORT).show();
-                }
+            @Override
+            public void onSwipeRight(){
+                viewMan.setViewsFromCity(prevCity);
             }
         });
 
-        return rndCityCur.getLong(rndCityCur.getColumnIndex("_id"));
+        currCity = new City(ctx, map, dbHelper, viewMan);
     }
+
 
     public void onResume(){
         super.onResume();

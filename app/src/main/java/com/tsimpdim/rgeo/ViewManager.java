@@ -2,12 +2,10 @@ package com.tsimpdim.rgeo;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
@@ -21,7 +19,7 @@ public class ViewManager {
     private Context ctx;
 
     private HashMap<String, TextView> tViews;
-    
+
     // We save cityNameView separately from the rest of the tViews
     // That's because we want it to display instantly and without any sort of modification
     // e.g animation etc. etc.
