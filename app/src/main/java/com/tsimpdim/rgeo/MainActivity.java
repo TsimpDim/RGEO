@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity{
 
     private MapView map = null;
     private ViewManager viewMan;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +58,13 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        // Set up Map
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
+
+        dbHelper = new DatabaseHelper(this);
 
         processNewCity();
 
@@ -74,21 +78,18 @@ public class MainActivity extends AppCompatActivity{
 
         final City currCity = new City();
 
-        // Get Cursor
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        // Get random City from DB
         Cursor rndCityCur = dbHelper.getRndCity();
 
-        // Set up map
-        Toast.makeText(this, "Loading map...", Toast.LENGTH_SHORT).show();
-
+        // Get Latitude & Longitude
         currCity.setLatitude(rndCityCur.getFloat(rndCityCur.getColumnIndex("latitude")));
         currCity.setLongitude(rndCityCur.getFloat(rndCityCur.getColumnIndex("longitude")));
 
+        // Show location on map
         IMapController mapController = map.getController();
         mapController.setZoom(13);
         GeoPoint startPoint = new GeoPoint(currCity.getLatitude(), currCity.getLongitude());
         mapController.setCenter(startPoint);
-
 
         // Get city name
         currCity.setCityName(rndCityCur.getString(rndCityCur.getColumnIndex("name")));
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity{
 
                     viewMan.setViewsFromCity(city);
                 }catch(JSONException e){
-                    Toast.makeText(MainActivity.this, "An error occured", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Error on city name", Toast.LENGTH_SHORT).show();
                 }
             }
         });
