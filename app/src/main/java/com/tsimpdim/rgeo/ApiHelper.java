@@ -12,14 +12,14 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
-public class CountryAPIHelper {
+public class ApiHelper {
 
     private final String callURL;
     private final RequestQueue queue;
     private final Context ctx;
     private final City city;
 
-    public CountryAPIHelper(String url, City city, Context context){
+    public ApiHelper(String url, City city, Context context){
         ctx = context;
         callURL = url;
         queue = Volley.newRequestQueue(ctx);
@@ -48,4 +48,7 @@ public class CountryAPIHelper {
         queue.add(jsonObjectRequest);
     }
 
+    public String getCallURL() {
+        return callURL;
+    }
 }

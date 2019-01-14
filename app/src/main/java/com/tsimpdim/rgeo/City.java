@@ -85,7 +85,7 @@ public class City {
         // Get country code
         setCountryCode(rndCityCur.getString(rndCityCur.getColumnIndex("countrycode")));
 
-        CountryAPIHelper api = new CountryAPIHelper("https://restcountries.eu/rest/v2/alpha/" + getCountryCode() + "?fields=name;timezones;currencies;languages", this, mainCtx);
+        ApiHelper api = new ApiHelper("https://restcountries.eu/rest/v2/alpha/" + getCountryCode() + "?fields=name;timezones;currencies;languages", this, mainCtx);
         api.getResponse(new VolleyCallback() {
             @Override
             public void onSuccess(City city, JSONObject result) {
@@ -116,6 +116,23 @@ public class City {
             }
         });
 
+        // Get Weather
+        ApiHelper weatherInfoHelper = new ApiHelper("https://api.airvisual.com/v2/nearest_city?lat="+getLatitude()+"&lon="+getLongitude()+"&key="+ BuildConfig.RGEO_ApiKey, this, mainCtx);
+        weatherInfoHelper.getResponse(new VolleyCallback() {
+            @Override
+            public void onSuccess(City city, JSONObject result) {
+                try {
+                    JSONObject data = result.getJSONObject("data");
+                    JSONObject current = data.getJSONObject("current");
+                    JSONObject weather = current.getJSONObject("weather");
+                    String timestamp = weather.getString("ts");
+
+                }catch(JSONException e){
+                    e.printStackTrace();
+                    Toast.makeText(mainCtx, "Couldn't get weather data", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         return this;
     }
 
