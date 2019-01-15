@@ -24,6 +24,9 @@ public class City {
     private String currencySymbol;
     private String currencyCode;
     private String timezone;
+    private int temperature;
+    private int humidity;
+    private int windSpeed;
 
     private ViewManager viewMan;
     private DatabaseHelper dbHelper;
@@ -33,7 +36,8 @@ public class City {
 
 
     public City(String cityName, float latitude, float longitude, int population, String countryName, String countryCode,
-                String language, String currency, String currencySymbol, String currencyCode, String timezone) {
+                String language, String currency, String currencySymbol, String currencyCode, String timezone, int temperature,
+                int humidity, int windSpeed) {
         this.cityName = cityName;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -45,6 +49,9 @@ public class City {
         this.currencySymbol = currencySymbol;
         this.currencyCode = currencyCode;
         this.timezone = timezone;
+        this.temperature = temperature;
+        this.humidity = humidity;
+        this.windSpeed = windSpeed;
     }
 
     public City(Context ctx, MapView mapView, DatabaseHelper dbHelper, ViewManager viewMan){
@@ -109,7 +116,6 @@ public class City {
                     JSONObject languageObj = languages.getJSONObject(0);
                     city.setLanguage(languageObj.getString("name"));
 
-                    viewMan.setViewsFromCity(city);
                 }catch(JSONException e){
                     Toast.makeText(mainCtx, "Error on city name", Toast.LENGTH_SHORT).show();
                 }
@@ -125,8 +131,20 @@ public class City {
                     JSONObject data = result.getJSONObject("data");
                     JSONObject current = data.getJSONObject("current");
                     JSONObject weather = current.getJSONObject("weather");
-                    String timestamp = weather.getString("ts");
 
+                    // Temperature
+                    int temperature = weather.getInt("tp");
+                    setTemperature(temperature);
+
+                    // Humidity
+                    int humidity = weather.getInt("hu");
+                    setHumidity(humidity);
+
+                    // Wind Speed
+                    int windspeed = weather.getInt("ws");
+                    setWindSpeed(windspeed);
+
+                    viewMan.setViewsFromCity(city);
                 }catch(JSONException e){
                     e.printStackTrace();
                     Toast.makeText(mainCtx, "Couldn't get weather data", Toast.LENGTH_LONG).show();
@@ -223,4 +241,29 @@ public class City {
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
     }
+
+    public int getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
+    }
+
+    public int getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
+    }
+
+    public int getWindSpeed() {
+        return windSpeed;
+    }
+
+    public void setWindSpeed(int windspeed) {
+        this.windSpeed = windspeed;
+    }
 }
+

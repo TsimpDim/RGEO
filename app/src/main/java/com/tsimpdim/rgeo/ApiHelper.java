@@ -44,7 +44,6 @@ public class ApiHelper {
                 }
             });
 
-        // Access the RequestQueue through your singleton class.
         queue.add(jsonObjectRequest);
     }
 

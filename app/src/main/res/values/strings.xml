@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">RGEO</string>
-    <string name="city_population">Population : %1s people! </string>
-    <string name="country_code">Country : %1s  (%1s) </string>
-    <string name="language">Language : %1s </string>
-    <string name="currency">Currency : %1s (%1s | %1s) </string>
-    <string name="timezone">Timezone : %1s </string>
+    <string name="city_population">Population : %s people! </string>
+    <string name="country_code">Country : %s  (%s) </string>
+    <string name="language">Language : %s </string>
+    <string name="currency">Currency : %s (%s | %s) </string>
+    <string name="timezone">Timezone : %s </string>
+    <string name="citytemp">Temp\n
+        %d°C</string>
+    <string name="cityhum">Hum\n
+        %d%%</string>
+    <string name="cityws">Wind\n
+        %d m/s</string>
 </resources>
 

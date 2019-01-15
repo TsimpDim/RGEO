@@ -39,6 +39,10 @@ public class ViewManager {
         tViews.put("coLang", (TextView)((Activity)ctx).findViewById(R.id.language));
         tViews.put("coCurr", (TextView)((Activity)ctx).findViewById(R.id.currency));
         tViews.put("coTmz", (TextView)((Activity)ctx).findViewById(R.id.timezone));
+        tViews.put("ciTmp", (TextView)((Activity)ctx).findViewById(R.id.citytemp));
+        tViews.put("ciHum", (TextView)((Activity)ctx).findViewById(R.id.cityhum));
+        tViews.put("ciWs", (TextView)((Activity)ctx).findViewById(R.id.cityws));
+
 
         fadeIn = new AlphaAnimation(0.0f, 1.0f);
         fadeOut = new AlphaAnimation( 1.0f, 0.0f);
@@ -48,6 +52,7 @@ public class ViewManager {
     }
 
     public void setViewsFromCity(City city){
+
 
         // Set city name
         try {
@@ -80,6 +85,15 @@ public class ViewManager {
 
         // Language
         tViews.get("coLang").setText(((Activity)ctx).getResources().getString(R.string.language, city.getLanguage()));
+
+        // Temperature
+        tViews.get("ciTmp").setText(((Activity)ctx).getResources().getString(R.string.citytemp, city.getTemperature()));
+
+        // Humidity
+        tViews.get("ciHum").setText(((Activity)ctx).getResources().getString(R.string.cityhum, city.getHumidity()));
+
+        // Wind speed
+        tViews.get("ciWs").setText(((Activity)ctx).getResources().getString(R.string.cityws, city.getWindSpeed()));
 
         fadeOutViews();
         fadeInViews();

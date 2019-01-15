@@ -1,180 +1,297 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:animateLayoutChanges="true"
-    android:background="#323232"
-    >
+    android:background="#323232">
 
-<LinearLayout
-    android:id="@+id/relativelayout"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:animateLayoutChanges="true">
-
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/relativelayout"
         android:layout_width="fill_parent"
-        android:layout_height="200dp">
+        android:layout_height="fill_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/myImageView"
-            android:src="@drawable/mountain"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="200dp">
+
+            <ImageView
+                android:id="@+id/myImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/mountain" />
+
+            <TextView
+                android:id="@+id/myImageViewText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:layout_alignLeft="@id/myImageView"
+                android:layout_alignTop="@id/myImageView"
+                android:layout_alignRight="@id/myImageView"
+                android:layout_alignBottom="@id/myImageView"
+
+                android:background="#8000"
+                android:gravity="center"
+                android:text="Hello"
+                android:textColor="#FFF"
+                android:textSize="50sp" />
+
+            <TextView
+                android:id="@+id/MapCollapse"
+                android:layout_width="98dp"
+                android:layout_height="26dp"
+
+                android:layout_alignStart="@+id/myImageViewText"
+                android:layout_alignLeft="@id/myImageView"
+                android:layout_alignTop="@id/myImageView"
+                android:layout_alignRight="@id/myImageView"
+
+                android:layout_alignBottom="@id/myImageView"
+                android:layout_marginStart="-10dp"
+
+
+                android:layout_marginLeft="-1dp"
+                android:layout_marginTop="174dp"
+                android:layout_marginRight="314dp"
+                android:layout_marginBottom="0dp"
+                android:background="@drawable/map_rect"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="toggleMap"
+                android:text="Map"
+                android:textColor="#FFF"
+                android:textSize="15sp" />
+
+        </RelativeLayout>
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/map"
+            android:layout_width="fill_parent"
+            android:layout_height="190dp"
+            android:visibility="gone" />
+
 
         <TextView
-            android:id="@+id/myImageViewText"
+            android:id="@+id/infoheader"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
 
-            android:layout_alignLeft="@id/myImageView"
-            android:layout_alignTop="@id/myImageView"
-            android:layout_alignRight="@id/myImageView"
-            android:layout_alignBottom="@id/myImageView"
+            android:background="@drawable/header_rect"
+            android:paddingLeft="10dp"
 
-            android:gravity="center"
-            android:text="Hello"
-            android:textSize="50sp"
-            android:textColor="#FFF"
-            android:background="#8000" />
+
+            android:text="Info"
+
+            android:textSize="25sp" />
 
         <TextView
-            android:id="@+id/MapCollapse"
-            android:layout_width="98dp"
-            android:layout_height="26dp"
+            android:id="@+id/country"
 
-            android:layout_alignStart="@+id/myImageViewText"
-            android:layout_alignLeft="@id/myImageView"
-            android:layout_alignTop="@id/myImageView"
-            android:layout_alignRight="@id/myImageView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
 
-            android:layout_alignBottom="@id/myImageView"
-            android:layout_marginStart="-1dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="5dp"
 
-            android:layout_marginLeft="-1dp"
-            android:layout_marginTop="174dp"
-            android:layout_marginRight="314dp"
-            android:layout_marginBottom="0dp"
-            android:background="@drawable/map_rect"
-            android:clickable="true"
-            android:gravity="center"
-            android:onClick="toggleContents"
-            android:text="Map"
-            android:textColor="#FFF"
-            android:textSize="15sp" />
+            android:background="@drawable/country_rect"
+            android:elevation="10dp"
 
-    </RelativeLayout>
+            android:paddingLeft="30dp"
 
-    <org.osmdroid.views.MapView
-        android:id="@+id/map"
-        android:layout_width="fill_parent"
-        android:layout_height="190dp"
-        android:visibility="gone"/>
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
 
-    <TextView
-        android:id="@+id/country"
+            android:text="@string/country_code" />
 
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        <TextView
+            android:id="@+id/population"
 
-        android:paddingLeft="30dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
 
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
 
-        android:layout_marginTop="10dp"
+            android:background="@drawable/pop_rect"
+            android:elevation="10dp"
 
-        android:background="@drawable/country_rect"
-        android:elevation="10dp"
+            android:paddingLeft="30dp"
 
-        android:text="@string/country_code" />
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
 
-    <TextView
-        android:id="@+id/population"
+            android:text="@string/city_population" />
 
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        <TextView
+            android:id="@+id/language"
 
-        android:paddingLeft="30dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
 
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
 
-        android:layout_marginTop="5dp"
+            android:background="@drawable/lan_rect"
+            android:elevation="10dp"
 
-        android:background="@drawable/pop_rect"
-        android:elevation="10dp"
+            android:paddingLeft="30dp"
 
-        android:text="@string/city_population" />
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
 
-    <TextView
-        android:id="@+id/language"
+            android:text="@string/language" />
 
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        <TextView
+            android:id="@+id/currency"
 
-        android:paddingLeft="30dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
 
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
 
-        android:layout_marginTop="5dp"
+            android:background="@drawable/misc_rect"
+            android:elevation="10dp"
 
-        android:background="@drawable/lan_rect"
-        android:elevation="10dp"
+            android:paddingLeft="30dp"
 
-        android:text="@string/language" />
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
 
-    <TextView
-        android:id="@+id/currency"
+            android:text="@string/currency" />
 
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        <TextView
 
-        android:paddingLeft="30dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
+            android:id="@+id/timezone"
 
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
 
-        android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
 
-        android:background="@drawable/misc_rect"
-        android:elevation="10dp"
+            android:background="@drawable/misc_rect"
+            android:elevation="10dp"
 
-        android:text="@string/currency" />
-    <TextView
+            android:paddingLeft="30dp"
 
-        android:id="@+id/timezone"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
 
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+            android:text="@string/timezone" />
 
-        android:paddingLeft="30dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
+        <TextView
+            android:id="@+id/weatherheader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/header_rect"
+            android:paddingLeft="10dp"
 
-        android:layout_marginTop="5dp"
+            android:onClick="toggleWeather"
+            android:text="Weather"
 
-        android:background="@drawable/misc_rect"
-        android:elevation="10dp"
-
-        android:text="@string/timezone" />
+            android:textSize="25sp" />
 
 
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/weathercont"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+
+
+            <LinearLayout
+                android:id="@+id/weatherdata"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:layout_marginBottom="20dp"
+                >
+
+
+                <TextView
+                    android:id="@+id/cityhum"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="10dp"
+
+                    android:textAlignment="center"
+
+                    android:textSize="25sp"
+                    android:gravity="center"
+
+                    android:background="@drawable/circle_hum"
+                    android:text="@string/cityhum"
+                    />
+
+
+                <TextView
+                    android:id="@+id/citytemp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="10dp"
+                    android:textAlignment="center"
+
+                    android:textSize="25sp"
+                    android:gravity="center"
+
+                    android:background="@drawable/circle_temp"
+                    android:text="@string/citytemp"
+                    />
+
+                <TextView
+                    android:id="@+id/cityws"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:textAlignment="center"
+
+                    android:minWidth="35dp"
+                    android:minHeight="50dp"
+
+                    android:textSize="25sp"
+                    android:gravity="center"
+
+                    android:background="@drawable/circle_ws"
+                    android:text="@string/cityws"
+                    />
+        </LinearLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Data by AirVisual API"
+                android:layout_marginLeft="20dp"
+                android:textSize="15sp"
+                android:textColor="#8c96a5"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 </ScrollView>
